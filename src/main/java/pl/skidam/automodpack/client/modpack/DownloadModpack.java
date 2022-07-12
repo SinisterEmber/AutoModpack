@@ -2,14 +2,19 @@ package pl.skidam.automodpack.client.modpack;
 
 import net.minecraft.client.MinecraftClient;
 
+import pl.skidam.automodpack.AutoModpackClient;
 import pl.skidam.automodpack.client.ui.DangerScreen;
 import pl.skidam.automodpack.client.ui.LoadingScreen;
 import pl.skidam.automodpack.config.Config;
 import pl.skidam.automodpack.utils.Download;
 
+import java.io.File;
+import java.io.FileReader;
+import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 
 import static pl.skidam.automodpack.AutoModpackClient.isOnServer;
+import static pl.skidam.automodpack.AutoModpackClient.serverIP;
 import static pl.skidam.automodpack.AutoModpackMain.*;
 
 public class DownloadModpack {
@@ -19,7 +24,6 @@ public class DownloadModpack {
         LOGGER.info("Downloading modpack form {}...", link);
 
         // Download and check if download is successful *magic*
-
         if (Download.Download(link, out)) {
             LOGGER.info("Failed to download modpack!");
             return;

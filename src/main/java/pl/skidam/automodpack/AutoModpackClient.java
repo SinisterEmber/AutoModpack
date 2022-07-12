@@ -24,6 +24,7 @@ public class AutoModpackClient implements ClientModInitializer {
 
     public static boolean isOnServer;
     public static String serverIP;
+    public static final File selected_modpack = new File("./AutoModpack/modpacks/selected-modpack.txt");
     @Override
     public void onInitializeClient() {
 
@@ -45,10 +46,18 @@ public class AutoModpackClient implements ClientModInitializer {
         } catch (Exception e) { // ignore
         }
 
+        if (!savedLink.equals("")) {
+            if (ValidateURL(savedLink)) {
+                link = savedLink;
+                LOGGER.info("Loaded saved link to modpack: " + link);
+            } else {
+                LOGGER.error("Saved link is not valid url or is not end with /modpack");
+            }
+        }
+
         // load saved selected modpack from ./AutoModpack/selected-modpack.txt file
-        if (new File("./AutoModpack/selected-modpack.txt").exists()) {
+        if (selected_modpack.exists()) {
             try {
-                File selected_modpack = new File("./AutoModpack/selected-modpack.txt");
                 FileReader fr = new FileReader(selected_modpack);
                 Scanner inFile = new Scanner(fr);
                 if (inFile.hasNextLine()) {
@@ -57,15 +66,6 @@ public class AutoModpackClient implements ClientModInitializer {
                 }
                 inFile.close();
             } catch (Exception e) { // ignore
-            }
-        }
-
-        if (!savedLink.equals("")) {
-            if (ValidateURL(savedLink)) {
-                link = savedLink;
-                LOGGER.info("Loaded saved link to modpack: " + link);
-            } else {
-                LOGGER.error("Saved link is not valid url or is not end with /modpack");
             }
         }
 
@@ -80,7 +80,6 @@ public class AutoModpackClient implements ClientModInitializer {
             serverIP = serverIP.replace("/", "-");
             serverIP = serverIP.replace(":", "-");
             out = new File("./AutoModpack/modpacks/modpack-" + serverIP + ".zip");
-            File selected_modpack = new File("./AutoModpack/modpacks/selected-modpack.txt");
             if (!selected_modpack.exists()) {
                 try {
                     selected_modpack.createNewFile();
