@@ -23,6 +23,7 @@ import static pl.skidam.automodpack.utils.ValidateURL.ValidateURL;
 public class AutoModpackClient implements ClientModInitializer {
 
     public static boolean isOnServer;
+    public static String serverIP;
     @Override
     public void onInitializeClient() {
 
@@ -44,6 +45,21 @@ public class AutoModpackClient implements ClientModInitializer {
         } catch (Exception e) { // ignore
         }
 
+        // load saved selected modpack from ./AutoModpack/selected-modpack.txt file
+        if (new File("./AutoModpack/selected-modpack.txt").exists()) {
+            try {
+                File selected_modpack = new File("./AutoModpack/selected-modpack.txt");
+                FileReader fr = new FileReader(selected_modpack);
+                Scanner inFile = new Scanner(fr);
+                if (inFile.hasNextLine()) {
+                    serverIP = inFile.nextLine();
+                    out = new File("./AutoModpack/modpacks/modpack-" + serverIP + ".zip");
+                }
+                inFile.close();
+            } catch (Exception e) { // ignore
+            }
+        }
+
         if (!savedLink.equals("")) {
             if (ValidateURL(savedLink)) {
                 link = savedLink;
@@ -58,15 +74,41 @@ public class AutoModpackClient implements ClientModInitializer {
         ClientLoginNetworking.registerGlobalReceiver(AM_LINK, this::onServerLinkReceived);
 
         // register
-        ClientLoginConnectionEvents.QUERY_START.register((clientLoginNetworkHandler, minecraftClient) -> isOnServer = true);
-        ClientLoginConnectionEvents.DISCONNECT.register((clientLoginNetworkHandler, minecraftClient) -> isOnServer = false);
+        ClientLoginConnectionEvents.QUERY_START.register((clientLoginNetworkHandler, minecraftClient) -> {
+            serverIP = clientLoginNetworkHandler.getConnection().getAddress().toString();
+            LOGGER.warn("Connected to server: " + serverIP);
+            serverIP = serverIP.replace("/", "-");
+            serverIP = serverIP.replace(":", "-");
+            out = new File("./AutoModpack/modpacks/modpack-" + serverIP + ".zip");
+            File selected_modpack = new File("./AutoModpack/modpacks/selected-modpack.txt");
+            if (!selected_modpack.exists()) {
+                try {
+                    selected_modpack.createNewFile();
+                } catch (IOException e) {
+                    LOGGER.error("Couldn't create ./AutoModpack/modpacks/selected-modpack.txt file");
+                }
+            }
+
+            try {
+                FileWriter fw = new FileWriter(selected_modpack);
+                fw.write(serverIP);
+                fw.close();
+            } catch (IOException e) {
+                LOGGER.error("Couldn't save serverIP to ./AutoModpack/modpacks/selected-modpack.txt file");
+            }
+
+            isOnServer = true;
+        });
+
+        ClientLoginConnectionEvents.DISCONNECT.register((clientLoginNetworkHandler, minecraftClient) -> {
+            isOnServer = false;
+        });
 
         new StartAndCheck(true, false);
     }
 
     private CompletableFuture<PacketByteBuf> onServerRequest(MinecraftClient minecraftClient, ClientLoginNetworkHandler clientLoginNetworkHandler, PacketByteBuf inBuf, Consumer<GenericFutureListener<? extends Future<? super Void>>> consumer) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-
         buf.writeInt(1);
         return CompletableFuture.completedFuture(buf);
     }

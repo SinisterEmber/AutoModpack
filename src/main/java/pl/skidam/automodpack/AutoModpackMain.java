@@ -19,7 +19,7 @@ public class AutoModpackMain implements ModInitializer {
     public static String AutoModpackUpdated;
     public static String ModpackUpdated;
     public static String link;
-    public static final File out = new File("./AutoModpack/modpacks/modpack.zip"); // TODO name modpack of the server ip
+    public static File out = new File("./AutoModpack/modpacks/modpack.zip");
     public static String correctName = "AutoModpack-1.18.x.jar";
     public static File selfOut = new File( "./mods/" + correctName);
     public static final File selfBackup = new File("./AutoModpack/" + correctName);
