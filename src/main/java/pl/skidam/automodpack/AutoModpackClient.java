@@ -90,7 +90,7 @@ public class AutoModpackClient implements ClientModInitializer {
 
             try {
                 FileWriter fw = new FileWriter(selected_modpack);
-                fw.write(serverIP);
+                fw.write(String.valueOf(out));
                 fw.close();
             } catch (IOException e) {
                 LOGGER.error("Couldn't save serverIP to ./AutoModpack/modpacks/selected-modpack.txt file");

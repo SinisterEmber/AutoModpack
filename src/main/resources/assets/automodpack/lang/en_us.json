@@ -39,5 +39,7 @@
   "gui.automodpack.screen.danger.secDescription": "It might be risky! Don't download if don't trust the server admins!",
   "gui.automodpack.screen.danger.button.accept": "Download",
   "gui.automodpack.screen.danger.button.dontshowagain": "Download and don't show it again",
-  "gui.automodpack.screen.danger.button.cancel": "Don't download"
+  "gui.automodpack.screen.danger.button.cancel": "Don't download",
+
+  "gui.automodpack.button.back": "Back"
 }

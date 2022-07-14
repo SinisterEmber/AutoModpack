@@ -19,6 +19,7 @@ public class AutoModpackMain implements ModInitializer {
     public static String AutoModpackUpdated;
     public static String ModpackUpdated;
     public static String link;
+    public static final File modpacksDir = new File("./AutoModpack/modpacks/");
     public static File out = new File("./AutoModpack/modpacks/modpack.zip");
     public static String correctName = "AutoModpack-1.18.x.jar";
     public static File selfOut = new File( "./mods/" + correctName);
