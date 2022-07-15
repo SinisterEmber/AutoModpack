@@ -26,8 +26,7 @@ import java.util.Scanner;
 
 import static pl.skidam.automodpack.AutoModpackClient.selected_modpack;
 import static pl.skidam.automodpack.AutoModpackClient.serverIP;
-import static pl.skidam.automodpack.AutoModpackMain.LOGGER;
-import static pl.skidam.automodpack.AutoModpackMain.out;
+import static pl.skidam.automodpack.AutoModpackMain.*;
 import static pl.skidam.automodpack.client.StartAndCheck.isChecking;
 
 @Environment(EnvType.CLIENT)
@@ -39,35 +38,47 @@ public class MenuScreen extends Screen {
         super(new LiteralText("Auto").formatted(Formatting.GOLD).append(new LiteralText("Modpack").formatted(Formatting.WHITE).append(new LiteralText(" Menu").formatted(Formatting.GRAY)).formatted(Formatting.BOLD)));
         assert client != null;
     }
+
+    public static void SaveSelectedModpack(File file_modpack) {
+        String modpack = file_modpack.getName();
+        modpack = modpack.substring(modpack.lastIndexOf(" ")+1);
+        try {
+            if (!selected_modpack.exists()) {
+                selected_modpack.createNewFile();
+            }
+            FileWriter fw = new FileWriter(selected_modpack);
+            fw.write(modpack);
+            fw.close();
+        } catch (IOException e) {
+            LOGGER.error("Error while saving selected modpack");
+        }
+    }
+
+    public static String GetSelectedModpack() {
+        String modpack = "";
+        try {
+            if (!selected_modpack.exists()) {
+                selected_modpack.createNewFile();
+            }
+            FileReader fr = new FileReader(selected_modpack);
+            Scanner inFile = new Scanner(fr);
+            if (inFile.hasNextLine()) {
+                modpack = inFile.nextLine();
+            }
+            inFile.close();
+        } catch (Exception e) {
+            LOGGER.error("Error while loading selected modpack");
+        }
+        return modpack;
+    }
+
     @Override
     protected void init() {
-        // load saved selected modpack from ./AutoModpack/selected-modpack.txt file
-        if (selected_modpack.exists()) {
-            try {
-                FileReader fr = new FileReader(selected_modpack);
-                Scanner inFile = new Scanner(fr);
-                if (inFile.hasNextLine()) {
-                    out = new File(inFile.nextLine());
-                    ModpackSelectionListWidget.ModpackEntry modpackEntry = this.modpackSelectionList.getSelectedOrNull();
-                    assert modpackEntry != null;
-                    this.modpack = modpackEntry.modpackDefinition;
-                }
-                inFile.close();
-            } catch (Exception e) { // ignore
-            }
-        }
-
         this.modpackSelectionList = new ModpackSelectionListWidget(this.client);
         this.addSelectableChild(this.modpackSelectionList);
 
-
         super.init();
         assert this.client != null;
-
-//        // get height and with of the screen
-//        int width = this.width;
-//        int height = this.height;
-//        AutoModpackMain.LOGGER.warn("width: " + width + ", height: " + height);
 
         this.addDrawableChild(new ButtonWidget(this.width / 2 - 210, this.height - 38, 115, 20, new TranslatableText("gui.automodpack.button.update"), (button) -> {
             AutoModpackToast.add(0);
@@ -77,38 +88,13 @@ public class MenuScreen extends Screen {
             }
         }));
 
-        //if (out.exists()) { // out == modpackdir
-            this.addDrawableChild(new ButtonWidget(this.width / 2 - 90, this.height - 38, 115, 20, new TranslatableText("gui.automodpack.button.delete"), (button) -> {
-                this.client.setScreen(new ConfirmScreen());
-            }));
-        //}
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 90, this.height - 38, 115, 20, new TranslatableText("gui.automodpack.button.delete"), (button) -> {
+            this.client.setScreen(new ConfirmScreen());
+        }));
 
         // make back to the main menu button
         this.addDrawableChild(new ButtonWidget(this.width / 2 + 100, this.height - 38, 115, 20, new TranslatableText("gui.automodpack.button.back"), (button) -> {
-            if (this.modpackSelectionList.getSelectedOrNull() != null) {
-                out = new File(this.modpackSelectionList.getSelectedOrNull().modpackDefinition);
-
-                if (!selected_modpack.exists()) {
-                    try {
-                        selected_modpack.createNewFile();
-                    } catch (IOException e) {
-                        LOGGER.error("Couldn't create ./AutoModpack/modpacks/selected-modpack.txt file");
-                    }
-                }
-
-                try {
-                    FileWriter fw = new FileWriter(selected_modpack);
-                    fw.write(String.valueOf(out));
-                    fw.close();
-                } catch (IOException e) {
-                    LOGGER.error("Couldn't save serverIP to ./AutoModpack/modpacks/selected-modpack.txt file");
-                }
-
-            }
-
             this.client.setScreen(new TitleScreen());
-
-
         }));
     }
 
@@ -139,20 +125,19 @@ public class MenuScreen extends Screen {
             super(client, MenuScreen.this.width, MenuScreen.this.height, 32, MenuScreen.this.height - 65 + 4, 18);
 
             // get all modpacks from modpacksDir folder
-
-            for (File modpack : Objects.requireNonNull(AutoModpackMain.modpacksDir.listFiles())) {
+            for (File modpack : Objects.requireNonNull(modpacksDir.listFiles())) {
                 if (modpack.getName().endsWith(".zip")) {
                     this.addEntry(new ModpackSelectionListWidget.ModpackEntry(modpack.getName()));
-                    if (modpack.getName().equals(String.valueOf(out))) {
-                        setSelected(new ModpackEntry(modpack.getName())); // TODO fix it, help needed pls :)
-                        LOGGER.error("Found selected modpack: " + modpack.getName());
+                    if (modpack.getName().equals(GetSelectedModpack())) {
+                        this.setSelected(new ModpackSelectionListWidget.ModpackEntry(modpack.getName())); // TODO fix it, help needed pls :)
+                        LOGGER.error("Found selected modpack: " + modpack.getName() + " (Entry: " + new ModpackSelectionListWidget.ModpackEntry(modpack.getName()) + "), (Selected == " + this.getSelectedOrNull() + ")");
                     }
                 }
             }
 
-
             if (this.getSelectedOrNull() != null) {
-                this.centerScrollOn((MenuScreen.ModpackSelectionListWidget.ModpackEntry) this.getSelectedOrNull());
+                this.setSelected(this.getSelectedOrNull());
+                this.centerScrollOn(this.getSelectedOrNull());
             }
 
         }
@@ -207,22 +192,7 @@ public class MenuScreen extends Screen {
             private void onPressed() {
                 ModpackSelectionListWidget.this.setSelected(this);
                 out = new File(this.modpackDefinition);
-
-                if (!selected_modpack.exists()) {
-                    try {
-                        selected_modpack.createNewFile();
-                    } catch (IOException e) {
-                        LOGGER.error("Couldn't create ./AutoModpack/modpacks/selected-modpack.txt file");
-                    }
-                }
-
-                try {
-                    FileWriter fw = new FileWriter(selected_modpack);
-                    fw.write(String.valueOf(out));
-                    fw.close();
-                } catch (IOException e) {
-                    LOGGER.error("Couldn't save serverIP to ./AutoModpack/modpacks/selected-modpack.txt file");
-                }
+                SaveSelectedModpack(out);
             }
 
             public Text getNarration() {

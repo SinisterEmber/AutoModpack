@@ -12,6 +12,7 @@ import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import pl.skidam.automodpack.client.StartAndCheck;
 import pl.skidam.automodpack.client.modpack.CheckModpack;
+import pl.skidam.automodpack.client.ui.MenuScreen;
 
 import java.io.*;
 import java.util.Scanner;
@@ -56,17 +57,8 @@ public class AutoModpackClient implements ClientModInitializer {
         }
 
         // load saved selected modpack from ./AutoModpack/selected-modpack.txt file
-        if (selected_modpack.exists()) {
-            try {
-                FileReader fr = new FileReader(selected_modpack);
-                Scanner inFile = new Scanner(fr);
-                if (inFile.hasNextLine()) {
-                    serverIP = inFile.nextLine();
-                    out = new File("./AutoModpack/modpacks/modpack-" + serverIP + ".zip");
-                }
-                inFile.close();
-            } catch (Exception e) { // ignore
-            }
+        if (!MenuScreen.GetSelectedModpack().equals("")) {
+            out = new File(modpacksDir + MenuScreen.GetSelectedModpack());
         }
 
         // packets
@@ -79,23 +71,8 @@ public class AutoModpackClient implements ClientModInitializer {
             LOGGER.warn("Connected to server: " + serverIP);
             serverIP = serverIP.replace("/", "-");
             serverIP = serverIP.replace(":", "-");
-            out = new File("./AutoModpack/modpacks/modpack-" + serverIP + ".zip");
-            if (!selected_modpack.exists()) {
-                try {
-                    selected_modpack.createNewFile();
-                } catch (IOException e) {
-                    LOGGER.error("Couldn't create ./AutoModpack/modpacks/selected-modpack.txt file");
-                }
-            }
-
-            try {
-                FileWriter fw = new FileWriter(selected_modpack);
-                fw.write(String.valueOf(out));
-                fw.close();
-            } catch (IOException e) {
-                LOGGER.error("Couldn't save serverIP to ./AutoModpack/modpacks/selected-modpack.txt file");
-            }
-
+            out = new File(modpacksDir + "modpack-" + serverIP + ".zip");
+            MenuScreen.SaveSelectedModpack(out);
             isOnServer = true;
         });
 
