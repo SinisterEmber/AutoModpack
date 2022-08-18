@@ -58,7 +58,7 @@ public class AutoModpackClient implements ClientModInitializer {
             fWriter.close();
         } catch (IOException e) { // ignore
         }
-        LOGGER.info("Link received from server through velocity: {}. Saved to file.", receivedLink);
+        LOGGER.info("Link received from server through proxy: {}. Saved to file.", receivedLink);
         PacketByteBuf outBuf = PacketByteBufs.create();
         outBuf.writeString("1");
         CompletableFuture.completedFuture(outBuf);
