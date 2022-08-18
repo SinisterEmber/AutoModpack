@@ -33,7 +33,7 @@ public class TitleScreenMixin extends Screen {
         if (!Checked && !isChecking) {
             AutoModpackToast.add(0);
             Checked = true;
-            new StartAndCheck(false, false);
+            new StartAndCheck(true, false);
         }
     }
 
