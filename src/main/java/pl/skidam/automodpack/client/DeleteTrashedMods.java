@@ -9,6 +9,7 @@ import java.io.FileReader;
 
 import static org.apache.commons.lang3.ArrayUtils.add;
 import static pl.skidam.automodpack.AutoModpackMain.LOGGER;
+import static pl.skidam.automodpack.AutoModpackMain.modsPath;
 
 public class DeleteTrashedMods {
 
@@ -33,9 +34,9 @@ public class DeleteTrashedMods {
             }
 
 
-            // For trashedModsNames array, delete file with same name in ./mods/ folder
+            // For trashedModsNames array, delete file with same name in mods folder
             for (String trashedModName : trashedModsNames) {
-                File trashedModFile = new File("./mods/" + trashedModName);
+                File trashedModFile = new File(modsPath.toFile() + File.separator + trashedModName);
                 if (trashedModFile.exists()) {
                     try {
                         FileDeleteStrategy.FORCE.delete(trashedModFile);

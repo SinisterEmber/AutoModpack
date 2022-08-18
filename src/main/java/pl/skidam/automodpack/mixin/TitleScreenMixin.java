@@ -17,6 +17,7 @@ import pl.skidam.automodpack.config.Config;
 
 import java.util.Objects;
 
+import static pl.skidam.automodpack.AutoModpackClient.Checked;
 import static pl.skidam.automodpack.AutoModpackMain.*;
 import static pl.skidam.automodpack.client.StartAndCheck.isChecking;
 
@@ -25,6 +26,15 @@ public class TitleScreenMixin extends Screen {
 
     public TitleScreenMixin(Text title) {
         super(title);
+    }
+
+    @Inject(at = @At("HEAD"), method = "init()V")
+    private void init(CallbackInfo ci) {
+        if (!Checked && !isChecking) {
+            AutoModpackToast.add(0);
+            Checked = true;
+            new StartAndCheck(false, false);
+        }
     }
 
     @Inject(at = @At("RETURN"), method = "initWidgetsNormal" )
