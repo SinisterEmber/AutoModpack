@@ -22,6 +22,10 @@ public class PreLoad implements PreLaunchEntrypoint {
 
         LOGGER.info("Prelaunching AutoModpack...");
 
+        JarUtilities.getJarFileOfMod("automodpack");
+
+        modsPath = JarUtilities.getModsPath();
+
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
 
             new SetupFiles();
@@ -34,13 +38,9 @@ public class PreLoad implements PreLaunchEntrypoint {
 
             new CheckModpack(true);
 
-            new CompatCheck();
-
-            JarUtilities.getJarFileOfMod("automodpack");
-
-            modsPath = JarUtilities.getModsPath();
-
             new DeleteTrashedMods();
+
+            new CompatCheck();
 
             new DeleteMods(true, "false");
 
@@ -56,10 +56,6 @@ public class PreLoad implements PreLaunchEntrypoint {
             new ServerSelfUpdater();
 
             new CompatCheck();
-
-            JarUtilities.getJarFileOfMod("automodpack");
-
-            modsPath = JarUtilities.getModsPath();
 
             LOGGER.info("AutoModpack successfully prelaunched!");
         }
