@@ -45,6 +45,8 @@ public class StartAndCheck {
                 }
             });
 
+            AutoModpackToast.add(0);
+
             if (onlyModpack) {
                 AutoModpackUpdated = "false";
                 new CheckModpack(false);

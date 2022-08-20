@@ -61,8 +61,7 @@ public class SelfUpdater {
     public void AutoModpackDownload() {
         LOGGER.info("Update found! Updating to new version: " + ModrinthAPI.modrinthAPIversion);
         if (!preload) {
-            AutoModpackToast.add(2);
-            MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().setScreen(new LoadingScreen()));
+            new Screen();
         }
 
         // *magic* downloading
@@ -102,6 +101,12 @@ public class SelfUpdater {
 
         if (preload) {
             new ScreenBox("Successfully updated AutoModpack - " + ModrinthAPI.modrinthAPIversion);
+        }
+    }
+    private static class Screen { // thank you DJtheRedstoner :)
+        private Screen() {
+            AutoModpackToast.add(2);
+            MinecraftClient.getInstance().execute(() -> MinecraftClient.getInstance().setScreen(new LoadingScreen()));
         }
     }
 }

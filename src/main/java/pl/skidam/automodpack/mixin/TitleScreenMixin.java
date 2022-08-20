@@ -28,17 +28,14 @@ public class TitleScreenMixin extends Screen {
         super(title);
     }
 
-    @Inject(at = @At("HEAD"), method = "init()V")
-    private void init(CallbackInfo ci) {
+    @Inject(at = @At("RETURN"), method = "initWidgetsNormal" )
+    private void AutoModpackUpdateButton(int y, int spacingY, CallbackInfo ci) {
+
         if (!Checked && !isChecking) {
-            AutoModpackToast.add(0);
             Checked = true;
             new StartAndCheck(true, false);
         }
-    }
 
-    @Inject(at = @At("RETURN"), method = "initWidgetsNormal" )
-    private void AutoModpackUpdateButton(int y, int spacingY, CallbackInfo ci) {
         int Y_CHECK_UPDATES_BUTTON = 0;
         int Y_DELETE_MODPACK_BUTTON = 0;
         if (AutoModpackMain.isModMenu) {

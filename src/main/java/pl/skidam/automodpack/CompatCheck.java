@@ -43,7 +43,7 @@ public class CompatCheck {
                 }
                 LOGGER.info("Successfully installed latest Quilted Fabric API (QFAPI)!");
 
-                new ScreenBox("Successfully installed latest Quilted Fabric API (QFAPI)!");
+                new ScreenBox("Successfully installed Quilted Fabric API (QFAPI)!");
             }
         } else { // fabric or something other lol
             AutoModpackMain.isFabricLoader = true;
@@ -61,7 +61,7 @@ public class CompatCheck {
                 }
                 LOGGER.info("Successfully installed latest Fabric API (FAPI)!");
 
-                new ScreenBox("Successfully installed latest Fabric API (FAPI)!");
+                new ScreenBox("Successfully installed Fabric API (FAPI)!");
             }
         }
     }

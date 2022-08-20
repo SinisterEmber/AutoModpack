@@ -19,17 +19,17 @@ public class Config {
     public static boolean SYNC_MODS;
     public static boolean ONLY_OPTIONAL_MODPACK;
     public static boolean AUTO_EXCLUDE_SERVER_SIDE_MODS;
-//    public static boolean AUTO_EXCLUDE_CLIENT_SIDE_MODS;
+    //    public static boolean AUTO_EXCLUDE_CLIENT_SIDE_MODS;
 //    public static boolean DISABLE_ALL_OTHER_MODS_ON_CLIENT;
     public static int HOST_PORT;
     public static int HOST_THREAD_COUNT;
     public static String HOST_EXTERNAL_IP;
     public static String HOST_EXTERNAL_IP_FOR_LOCAL_PLAYERS;
     public static String EXTERNAL_MODPACK_HOST;
+    public static final Path path = FabricLoader.getInstance().getConfigDir().resolve("automodpack.properties");
 
     static {
         final Properties properties = new Properties();
-        final Path path = FabricLoader.getInstance().getConfigDir().resolve("automodpack.properties");
         if (Files.isRegularFile(path)) {
             try (InputStream in = Files.newInputStream(path, StandardOpenOption.CREATE)) {
                 properties.load(in);
@@ -68,7 +68,6 @@ public class Config {
         LOGGER.info("Saving AutoModpack config...");
 
         final Properties properties = new Properties();
-        final Path path = FabricLoader.getInstance().getConfigDir().resolve("automodpack.properties");
 
         properties.setProperty("danger_screen", String.valueOf(DANGER_SCREEN));
         properties.setProperty("check_updates_button", String.valueOf(CHECK_UPDATES_BUTTON));
@@ -98,11 +97,9 @@ public class Config {
         try {
             return Integer.parseUnsignedInt(properties.getProperty(key));
         } catch (NumberFormatException e) {
-            if (properties.containsKey(key)) {
-                if (Files.isRegularFile(FabricLoader.getInstance().getConfigDir().resolve("automodpack.properties"))) {
-                    LOGGER.error("Invalid value for " + key + " in automodpack.properties. Value must be an integer. Value restarted to " + def);
-                }
-            } else {
+            if (properties.containsKey(key) && Files.isRegularFile(path)) {
+                LOGGER.error("Invalid value for " + key + " in automodpack.properties. Value must be an integer. Value restarted to " + def);
+            } else if (Files.isRegularFile(path) && !properties.containsKey(key)) {
                 LOGGER.info("Added new option to automodpack config (automodpack.properties): " + key + " = " + def);
             }
             properties.setProperty(key, String.valueOf(def));
@@ -113,6 +110,9 @@ public class Config {
     private static String getString(Properties properties, String key) {
         if (properties.getProperty(key) == null) {
             properties.setProperty(key, "");
+            if (Files.isRegularFile(path) && !properties.containsKey(key)) {
+                LOGGER.info("Added new option to automodpack config (automodpack.properties): " + key + " = \"\"");
+            }
             return "";
         }
         return properties.getProperty(key);
@@ -123,11 +123,9 @@ public class Config {
         if (booleanValue.equals(properties.getProperty(key))) {
             return Boolean.parseBoolean(booleanValue);
         } else {
-            if (properties.containsKey(key)) {
-                if (Files.isRegularFile(FabricLoader.getInstance().getConfigDir().resolve("automodpack.properties"))) {
-                    LOGGER.error("Invalid value for " + key + " in automodpack.properties. Value must be true or false. Value restarted to " + def);
-                }
-            } else {
+            if (properties.containsKey(key) && Files.isRegularFile(path)) {
+                LOGGER.error("Invalid value for " + key + " in automodpack.properties. Value must be true or false. Value restarted to " + def);
+            } else if (Files.isRegularFile(path) && !properties.containsKey(key)) {
                 LOGGER.info("Added new option to automodpack config (automodpack.properties): " + key + " = " + def);
             }
             properties.setProperty(key, String.valueOf(def));

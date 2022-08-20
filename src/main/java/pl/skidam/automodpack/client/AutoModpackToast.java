@@ -75,7 +75,7 @@ public class AutoModpackToast implements Toast {
         if (toast == null) {
             toastManager.add(new AutoModpackToast());
         } else if (WhoAreYouBefore == 0 || WhoAreYouBefore == 4 || WhoAreYouBefore == 3 || WhoAreYouBefore == 2 || WhoAreYouBefore == 1) {
-            if (WhoAreYou == 0) {
+            if (WhoAreYou == 0 || WhoAreYouBefore == 0) {
                 toastManager.clear();
             }
             if (WhoAreYou == 2 || WhoAreYou == 4) {
@@ -85,6 +85,10 @@ public class AutoModpackToast implements Toast {
         } else if (WhoAreYou == 0) {
             toastManager.clear();
         } else {
+            toastManager.add(new AutoModpackToast());
+        }
+
+        if (toast == null) {
             toastManager.add(new AutoModpackToast());
         }
     }
