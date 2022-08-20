@@ -30,6 +30,8 @@ Basically, this is Minecraft modification with goal to make easier updates to yo
 - Sync modpack mods with server mods.
 - Dynamically change content of your modpack without triggering your friends/players.
 
+## Server crashed? try manually install latest update
+
 ## How to use
 
 First of all download the latest version of the mod from [here](https://modrinth.com/mod/automodpack/versions).
@@ -37,8 +39,6 @@ First of all download the latest version of the mod from [here](https://modrinth
 Put it into the `mods` folder of your minecraft/server installation.
 
 Launch the game your game/server.
-
-NOTE: If game crashed at first launch don't worry. It crashed because you need to have installed fabric api / quilted fabric api, which is installed automatically before that crash.
 
 **- Client**
 
