@@ -15,8 +15,8 @@ public class InternetConnectionCheck {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setRequestProperty("X-Minecraft-Username", "other-packet");
-            connection.setConnectTimeout(3000); // 5 seconds
-            connection.setReadTimeout(3000); // 5 seconds as well
+            connection.setConnectTimeout(3000); // 3 seconds
+            connection.setReadTimeout(3000); // 3 seconds as well
             responseCode = connection.getResponseCode();
             if (responseCode != 200) {
                 LOGGER.error("AutoModpack -- Internet isn't available, Failed to get code 200 from " + connection.getURL().toString());
