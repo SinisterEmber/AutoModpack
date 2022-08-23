@@ -11,22 +11,25 @@ public class UnZip {
 
     public UnZip(File out, String ModpackUpdated) {
 
-        // Repeat this function every restart if modpack is up-to-date
-        if (out.exists()) {
+        // Add this to shut down hook
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (out.exists()) {
 
-            // Start unzip
-            LOGGER.info("Unzipping!");
-            try {
-                new UnZipper(out, new File("./"), "");
-            } catch (IOException e) {
-                LOGGER.error("Error while unzipping!\n" + e);
-                e.printStackTrace();
+                // Start unzip
+                LOGGER.info("Unzipping modpack!");
+                try {
+                    new UnZipper(out, new File("./"), "");
+                } catch (IOException e) {
+                    LOGGER.error("Error while unzipping!\n" + e);
+                    e.printStackTrace();
+                }
+                LOGGER.info("Successfully unzipped modpack!");
+
             }
-            LOGGER.info("Successfully unzipped!");
+        }));
 
-            // delete old mods
-            new DeleteMods(false, ModpackUpdated);
-        }
+        // delete old mods
+        new DeleteMods(false, ModpackUpdated);
     }
 }
 

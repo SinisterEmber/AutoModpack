@@ -20,8 +20,8 @@ public class JsonTool {
         connection.setReadTimeout(3000); // 5 seconds as well
         connection.connect();
         if (connection.getResponseCode() == 200) {
-            try (InputStreamReader inr = new InputStreamReader(connection.getInputStream())) {
-                element = JsonParser.parseReader(inr);
+            try (InputStreamReader isr = new InputStreamReader(connection.getInputStream())) {
+                element = JsonParser.parseReader(isr);
             }
         }
 
