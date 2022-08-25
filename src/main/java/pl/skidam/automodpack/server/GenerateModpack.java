@@ -5,16 +5,14 @@ import org.apache.commons.io.FileUtils;
 import pl.skidam.automodpack.config.Config;
 import pl.skidam.automodpack.utils.JarUtilities;
 import pl.skidam.automodpack.utils.Zipper;
+import pl.skidam.automodpack.utils.generateContentList;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static org.apache.commons.lang3.ArrayUtils.contains;
 import static pl.skidam.automodpack.AutoModpackMain.LOGGER;
@@ -211,6 +209,21 @@ public class GenerateModpack {
             e.printStackTrace();
             LOGGER.error(e.getMessage());
         }
+
+        try {
+            FileUtils.deleteQuietly(HostModpack.MODPACK_CONTENT_FILE.toFile());
+            List<String> contentList = generateContentList.generateContentList(HostModpack.MODPACK_FILE.toFile());
+            int size = contentList.size();
+            String contentOfContentFile = FileUtils.readFileToString(HostModpack.MODPACK_CONTENT_FILE.toFile(), Charset.defaultCharset());
+            for (int i = 0; i < size; i++) {
+                if (!contentOfContentFile.contains(contentList.get(i))) {
+                    FileUtils.writeStringToFile(HostModpack.MODPACK_CONTENT_FILE.toFile(), contentList.get(i) + "\n", Charset.defaultCharset(), true);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         LOGGER.info("Modpack created");
 
