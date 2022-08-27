@@ -53,6 +53,7 @@ public class CheckModpack {
             AutoModpackToast.add(1);
             update = true;
             new DownloadModpack.prepare(preload);
+            return;
         }
 
         LOGGER.info("Didn't find any updates for modpack!");

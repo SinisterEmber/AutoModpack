@@ -25,8 +25,7 @@ public class generateContentList {
         ZipEntry zipEntry = zis.getNextEntry();
         while (zipEntry != null) {
             ZipEntry zipEntrySize = zipFileSize.getEntry(String.valueOf(zipEntry));
-            AutoModpackMain.LOGGER.warn("{} =+= {}", zipEntry, zipEntrySize.getSize());
-            folderContent.add(zipEntry + " =+= " + zipEntrySize.getSize());
+            folderContent.add(zipEntry + " |=<|+|>=| " + zipEntrySize.getSize());
             zipEntry = zis.getNextEntry();
         }
         return folderContent;

@@ -26,9 +26,19 @@ public class Config {
     public static String HOST_EXTERNAL_IP;
     public static String HOST_EXTERNAL_IP_FOR_LOCAL_PLAYERS;
     public static String EXTERNAL_MODPACK_HOST;
-    public static final Path path = FabricLoader.getInstance().getConfigDir().resolve("automodpack.properties");
+//    public static final Path path = FabricLoader.getInstance().getConfigDir().resolve("automodpack.properties");
+    public static final Path path = Path.of("./config/automodpack.properties");
 
     static {
+
+        if (!path.toFile().exists()) {
+            try {
+                path.toFile().createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         final Properties properties = new Properties();
         if (Files.isRegularFile(path)) {
             try (InputStream in = Files.newInputStream(path, StandardOpenOption.CREATE)) {
@@ -62,9 +72,27 @@ public class Config {
     }
 
     public static void init() {
+
+        if (!path.toFile().exists()) {
+            try {
+                path.toFile().createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public void save() {
+
+        if (!path.toFile().exists()) {
+            try {
+                path.toFile().createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         LOGGER.info("Saving AutoModpack config...");
 
         final Properties properties = new Properties();

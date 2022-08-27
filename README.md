@@ -74,11 +74,11 @@ Use Cloth Config and Mod Menu mods to change settings in game
 
 **Client side**
 
-| Name                    | Default Value | Description                                   |
-|-------------------------|---------------|-----------------------------------------------|
-| `danger_screen`         | `true`        | Show danger screen before downloading updates |
-| `check_updates_button`  | `true`        | Show "Check updates" button on Title Screen   |
-| `delete_modpack_button` | `true`        | Show "Delete modpack" button on Title Screen  |
+| Name                    | Default Value | Description                                                                                                                       |
+|-------------------------|---------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| `danger_screen`         | `true`        | Show danger screen before downloading updates, also when this is disabled modpack can be updated in preload stage of loading game |
+| `check_updates_button`  | `true`        | Show "Check updates" button on Title Screen                                                                                       |
+| `delete_modpack_button` | `true`        | Show "Delete modpack" button on Title Screen                                                                                      |
 
 **Server side**
 
