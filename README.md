@@ -50,7 +50,7 @@ On join the server who has this mod, modpack will be automatically downloaded an
 
 NOTE: if you can't open any port on your server, or you just care about server performance. Use Google Drive, upload there modpack.zip whose automatically generated on your minecraft server at `./AutoModpack/modpack.zip`. And the link type into the config "external_modpack_host".
 
-(Unfortunately when using Google Drive or other download service/server `sync_mods` will not work. (Working on it, if you know how to implement Google Drive upload feature, please let me know.) )
+(Unfortunately when using Google Drive or other download service/server `sync_mods` and update feature introduced in 2.4.0 will not work. I am working on it, if you know how to implement Google Drive upload feature, let me know :)  )
 
 Add mods/configs whatever you want in your modpack to the `./AutoModpack/modpack/` directory.
 
@@ -135,13 +135,13 @@ No, it doesn't, but if you want this cool feature take a look at [AutoPlug](http
 
 - I get errors every time I try to download modpack!
 
-Check if in the server log after start where is a notification about the modpack host launch, there is a correct ip (the ip you are trying to connect to the server)
+Check if in the server log after start where is a notification about the modpack host launch, there is a correct ip (Its really can be last numbers of ip)
 If not change in the config `host_external_ip` to your correct server ip (without port)
 
 Follow the same process if you have a problem with the local host ip, but to `host_external_ip_for_local_players`
 
 ## Questions?
-* Contact me via discord Skidam#0001
+* Feel free to contact me via discord Skidam#0001
 
 **Contributors are welcome!**
 [**click.**](CONTRIBUTING.md)
