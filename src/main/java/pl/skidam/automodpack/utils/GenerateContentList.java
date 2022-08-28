@@ -12,7 +12,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-public class generateContentList {
+public class GenerateContentList {
     public static List<String> generateContentList(File zipToMakeContentListFrom) throws IOException {
         List<String> folderContent = new ArrayList<>();
         if (!HostModpack.MODPACK_CONTENT_FILE.toFile().exists()) {
@@ -28,6 +28,8 @@ public class generateContentList {
             folderContent.add(zipEntry + " |=<|+|>=| " + zipEntrySize.getSize());
             zipEntry = zis.getNextEntry();
         }
+        zis.close();
+        zipFileSize.close();
         return folderContent;
     }
 }

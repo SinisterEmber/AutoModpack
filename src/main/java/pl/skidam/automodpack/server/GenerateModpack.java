@@ -5,14 +5,12 @@ import org.apache.commons.io.FileUtils;
 import pl.skidam.automodpack.config.Config;
 import pl.skidam.automodpack.utils.JarUtilities;
 import pl.skidam.automodpack.utils.Zipper;
-import pl.skidam.automodpack.utils.generateContentList;
+import pl.skidam.automodpack.utils.GenerateContentList;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import static org.apache.commons.lang3.ArrayUtils.contains;
 import static pl.skidam.automodpack.AutoModpackMain.LOGGER;
@@ -212,7 +210,7 @@ public class GenerateModpack {
 
         try {
             FileUtils.deleteQuietly(HostModpack.MODPACK_CONTENT_FILE.toFile());
-            List<String> contentList = generateContentList.generateContentList(HostModpack.MODPACK_FILE.toFile());
+            List<String> contentList = GenerateContentList.generateContentList(HostModpack.MODPACK_FILE.toFile());
             int size = contentList.size();
             String contentOfContentFile = FileUtils.readFileToString(HostModpack.MODPACK_CONTENT_FILE.toFile(), Charset.defaultCharset());
             for (int i = 0; i < size; i++) {

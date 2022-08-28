@@ -10,9 +10,10 @@ import pl.skidam.automodpack.config.Config;
 import pl.skidam.automodpack.server.HostModpack;
 import pl.skidam.automodpack.ui.ScreenBox;
 import pl.skidam.automodpack.utils.Download;
+import pl.skidam.automodpack.utils.Error;
 import pl.skidam.automodpack.utils.UnZipper;
 import pl.skidam.automodpack.utils.Zipper;
-import pl.skidam.automodpack.utils.generateContentList;
+import pl.skidam.automodpack.utils.GenerateContentList;
 
 import java.io.File;
 import java.io.FileReader;
@@ -27,10 +28,12 @@ import static pl.skidam.automodpack.AutoModpackMain.*;
 public class DownloadModpack {
 
     public static boolean preload;
+    public static int maxInputs;
+    public static int minInputs;
 
     public DownloadModpack() {
 
-        if (CheckModpack.update && link.endsWith("/modpack")) {
+        if (CheckModpack.update && link.endsWith("/modpack") && link.startsWith("http://")) {
             LOGGER.info("Updating modpack");
 
             String baseLink = link.substring(0, link.lastIndexOf("/"));
@@ -38,6 +41,7 @@ public class DownloadModpack {
 
             if (Download.Download(contentLink, HostModpack.MODPACK_CONTENT_FILE.toFile())) {
                 LOGGER.info("Failed to download content file!");
+                new Error();
                 return;
             }
 
@@ -55,12 +59,34 @@ public class DownloadModpack {
             try {
                 new UnZipper(out, updateDir, "none");
             } catch (Exception e) {
+                new Error();
                 e.printStackTrace();
+                return;
             }
 
+            // For Loading Screen visuals
             try {
                 Scanner serverContentList = new Scanner(HostModpack.MODPACK_CONTENT_FILE.toFile());
-                List<String> clientContentList = generateContentList.generateContentList(out);
+                List<String> clientContentList = GenerateContentList.generateContentList(out);
+
+                while (serverContentList.hasNextLine()) {
+                    String serverLine = serverContentList.nextLine();
+                    if (!clientContentList.toString().contains(serverLine)) {
+                        maxInputs++;
+                    }
+                }
+
+                serverContentList.close();
+            } catch (Exception e) {
+                new Error();
+                e.printStackTrace();
+                return;
+            }
+
+            // Main logic
+            try {
+                Scanner serverContentList = new Scanner(HostModpack.MODPACK_CONTENT_FILE.toFile());
+                List<String> clientContentList = GenerateContentList.generateContentList(out);
 
                 while (serverContentList.hasNextLine()) {
 
@@ -91,6 +117,7 @@ public class DownloadModpack {
 
                     else if (clientContentList.toString().contains(serverLineOfName)) { // This starts with else from previous if to don't download empty folders. (Files which ends with "/")
                         if (file.length() != serverLineOfSize) {
+                            minInputs++; // For Loading Screen visuals
                             LOGGER.warn("File {} doesn't match the size, (server) {} != {} (client), downloading from {}", file.getName(),serverLineOfSize, file.length(), updateLink);
                             if (Download.Download(updateLink, file)) {
                                 LOGGER.error("Failed to download {} from {}!", file.getName(), updateLink);
@@ -101,6 +128,7 @@ public class DownloadModpack {
                     }
 
                     else {
+                        minInputs++; // For Loading Screen visuals
                         LOGGER.warn("File {} doesn't exists, downloading from {}!", file.getName(), updateLink);
                         if (Download.Download(updateLink, file)) {
                             LOGGER.error("Failed to download {} from {}!", file.getName(), updateLink);
@@ -110,9 +138,13 @@ public class DownloadModpack {
                     }
                 }
 
+                serverContentList.close();
+                minInputs++; // For Loading Screen visuals
+
                 LOGGER.info("Successfully updated modpack!");
 
             } catch (Exception e) {
+                new Error();
                 e.printStackTrace();
                 return;
             }
@@ -130,6 +162,9 @@ public class DownloadModpack {
                         FileDeleteStrategy.FORCE.delete(modFile);
                     }
                 }
+
+                inFile.close();
+                fr.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -165,6 +200,10 @@ public class DownloadModpack {
                 e.printStackTrace();
             }
         }
+
+        CheckModpack.update = false;
+        maxInputs = 0;
+        minInputs = 0;
 
         if (preload) {
             new ScreenBox("Updated modpack, restart your game!");
