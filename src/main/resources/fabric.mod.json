@@ -45,8 +45,5 @@
   "suggests": {
     "modmenu": ">=1.0.0",
     "cloth-config": ">=1.0.0"
-  },
-  "breaks": {
-    "seamless_loading_screen": "*"
   }
 }
