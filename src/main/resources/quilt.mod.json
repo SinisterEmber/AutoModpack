@@ -58,6 +58,13 @@
         "id": "cloth-config",
         "version": ">1.0.0"
       }
+    ],
+
+    "breaks": [
+      {
+        "id": "seamless_loading_screen",
+        "versions":"*"
+      }
     ]
   },
   "mixin": "automodpack.mixins.json"
